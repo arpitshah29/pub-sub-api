@@ -27,15 +27,18 @@ public class ExampleConfigurations {
     private Integer numberOfEventsToPublish;
     private Boolean singlePublishRequest;
     private Integer numberOfEventsToSubscribeInEachFetchRequest;
+    private Boolean processChangedFields;
     private Boolean plaintextChannel;
     private Boolean providedLoginUrl;
     private ReplayPreset replayPreset;
     private ByteString replayId;
+    private String managedSubscriptionId;
+    private String developerName;
 
     public ExampleConfigurations() {
         this(null, null, null, null, null,
-                null, null, null, 5, false, 5,
-                false, false, ReplayPreset.LATEST, null);
+                null, null, null, 5, false, 5, false,
+                false, false, ReplayPreset.LATEST, null, null, null);
     }
     public ExampleConfigurations(String filename) throws IOException {
 
@@ -60,6 +63,8 @@ public class ExampleConfigurations {
                 false : Boolean.parseBoolean(obj.get("SINGLE_PUBLISH_REQUEST").toString());
         this.numberOfEventsToSubscribeInEachFetchRequest = obj.get("NUMBER_OF_EVENTS_IN_FETCHREQUEST") == null ?
                 5 : Integer.parseInt(obj.get("NUMBER_OF_EVENTS_IN_FETCHREQUEST").toString());
+        this.processChangedFields = obj.get("PROCESS_CHANGE_EVENT_HEADER_FIELDS") == null ?
+                false : Boolean.parseBoolean(obj.get("PROCESS_CHANGE_EVENT_HEADER_FIELDS").toString());
         this.plaintextChannel = obj.get("USE_PLAINTEXT_CHANNEL") != null && Boolean.parseBoolean(obj.get("USE_PLAINTEXT_CHANNEL").toString());
         this.providedLoginUrl = obj.get("USE_PROVIDED_LOGIN_URL") != null && Boolean.parseBoolean(obj.get("USE_PROVIDED_LOGIN_URL").toString());
 
@@ -76,18 +81,21 @@ public class ExampleConfigurations {
             this.replayPreset = ReplayPreset.LATEST;
         }
 
+        this.developerName = obj.get("MANAGED_SUB_DEVELOPER_NAME") == null ? null : obj.get("MANAGED_SUB_DEVELOPER_NAME").toString();
+        this.managedSubscriptionId = obj.get("MANAGED_SUB_ID") == null ? null : obj.get("MANAGED_SUB_ID").toString();
     }
 
     public ExampleConfigurations(String username, String password, String loginUrl,
                                  String pubsubHost, int pubsubPort, String topic) {
         this(username, password, loginUrl, null, null, pubsubHost, pubsubPort, topic,
-                5, false, Integer.MAX_VALUE, false, false, ReplayPreset.LATEST, null);
+                5, false, Integer.MAX_VALUE, false, false, false, ReplayPreset.LATEST, null, null, null);
     }
 
     public ExampleConfigurations(String username, String password, String loginUrl, String tenantId, String accessToken,
-                                 String pubsubHost, Integer pubsubPort, String topic, Integer numberOfEventsToPublish,Boolean singlePublishRequest,
-                                 Integer numberOfEventsToSubscribeInEachFetchRequest, Boolean plaintextChannel, Boolean providedLoginUrl,
-                                 ReplayPreset replayPreset, ByteString replayId) {
+                                 String pubsubHost, Integer pubsubPort, String topic, Integer numberOfEventsToPublish,
+                                 Boolean singlePublishRequest, Integer numberOfEventsToSubscribeInEachFetchRequest,
+                                 Boolean processChangedFields, Boolean plaintextChannel, Boolean providedLoginUrl,
+                                 ReplayPreset replayPreset, ByteString replayId, String devName, String managedSubId) {
         this.username = username;
         this.password = password;
         this.loginUrl = loginUrl;
@@ -96,12 +104,16 @@ public class ExampleConfigurations {
         this.pubsubHost = pubsubHost;
         this.pubsubPort = pubsubPort;
         this.topic = topic;
+        this.singlePublishRequest = singlePublishRequest;
         this.numberOfEventsToPublish = numberOfEventsToPublish;
         this.numberOfEventsToSubscribeInEachFetchRequest = numberOfEventsToSubscribeInEachFetchRequest;
+        this.processChangedFields = processChangedFields;
         this.plaintextChannel = plaintextChannel;
         this.providedLoginUrl = providedLoginUrl;
         this.replayPreset = replayPreset;
         this.replayId = replayId;
+        this.developerName = devName;
+        this.managedSubscriptionId = managedSubId;
     }
 
     public String getUsername() {
@@ -184,6 +196,14 @@ public class ExampleConfigurations {
         this.numberOfEventsToSubscribeInEachFetchRequest = numberOfEventsToSubscribeInEachFetchRequest;
     }
 
+    public Boolean getProcessChangedFields() {
+        return processChangedFields;
+    }
+
+    public void setProcessChangedFields(Boolean processChangedFields) {
+        this.processChangedFields = processChangedFields;
+    }
+
     public boolean usePlaintextChannel() {
         return plaintextChannel;
     }
@@ -223,6 +243,23 @@ public class ExampleConfigurations {
     public void setReplayId(ByteString replayId) {
         this.replayId = replayId;
     }
+
+    public String getManagedSubscriptionId() {
+        return managedSubscriptionId;
+    }
+
+    public void setManagedSubscriptionId(String managedSubscriptionId) {
+        this.managedSubscriptionId = managedSubscriptionId;
+    }
+
+    public String getDeveloperName() {
+        return developerName;
+    }
+
+    public void setDeveloperName(String developerName) {
+        this.developerName = developerName;
+    }
+
 
     /**
      * NOTE: replayIds are meant to be opaque (See docs: https://developer.salesforce.com/docs/platform/pub-sub-api/guide/intro.html)
